@@ -1,13 +1,15 @@
+import pickle
+
 import fakeredis
 import pytest
+
 from redishelve import RedisShelf
 
 
 @pytest.fixture
 def redis():
     fake_server = fakeredis.FakeServer()
-    fake_redis = fakeredis.FakeStrictRedis(
-        server=fake_server)
+    fake_redis = fakeredis.FakeStrictRedis(server=fake_server)
     return fake_redis
 
 
@@ -17,6 +19,7 @@ def shelf(redis):
 
 
 def test_shelf_value(shelf):
+    shelf.writeback = True
     shelf['test'] = 'TEST'
     assert 'TEST' == shelf['test']
 
@@ -57,3 +60,31 @@ def test_shelf_delete(shelf):
     del (shelf['two'])
 
     assert None is shelf.get('two')
+
+
+def test_shelf_shelves_to_redis(shelf, redis):
+    shelf['test'] = 'TEST'
+    assert 'TEST' == pickle.loads(redis.get(b'test|test'))
+
+
+def test_mutable_values_with_writeback(redis):
+    shelf = RedisShelf(filename='test', redis=redis, writeback=True)
+    shelf.writeback = True
+    shelf['list'] = [1, 2, 3]
+    shelf['list'].append(4)
+
+    # before syncing, old value is in Redis.
+    assert [1, 2, 3] == pickle.loads(redis.get(b'test|list'))
+    shelf.sync()
+    assert [1, 2, 3, 4] == pickle.loads(redis.get(b'test|list'))
+
+
+def test_open_as_context_manager(redis):
+    import redishelve
+
+    with redishelve.open('test', redis) as test_shelf:
+        test_shelf['test'] = 'Test 1'
+        assert 'Test 1' == test_shelf['test']
+
+    with pytest.raises(ValueError):
+        test_shelf['test']

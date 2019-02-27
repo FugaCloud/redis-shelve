@@ -1,57 +1,52 @@
-import collections
-import pickle
+from shelve import Shelf
 
 
-class RedisShelf(collections.abc.MutableMapping):
-    def __init__(self, redis, filename):
-        self._prefix = filename
-        self._redis = redis
+class RedisShelf(Shelf):
+    def __init__(self, redis, filename, protocol=None, writeback=False):
+        self._prefix = "{}|".format(filename)
         self._keys = []
+        Shelf.__init__(
+            self, dict=redis, protocol=protocol, writeback=writeback)
 
-    def _create_shelf_key(self, key):
-        return "{prefix}|{key}".format(prefix=self._prefix, key=key)
+    def _prefix_key(self, key):
+        if key.startswith('{}'.format(self._prefix)):
+            # with writeback, shelf values are added by keys from cache.keys(),
+            # but the cache keys are already prefixed.
+            return key
+        return "{prefix}{key}".format(prefix=self._prefix, key=key)
 
-    def _create_key(self, shelf_key):
-        left = '{prefix}|'.format(prefix=self._prefix)
-        key = shelf_key[len(left):]
-        return key
-
-    def _update_keys(self, shelf_key):
-        if shelf_key not in self._keys:
-            self._keys.append(shelf_key)
+    def _remove_key_prefix(self, prefixed_key):
+        return prefixed_key[len(self._prefix):]
 
     def __setitem__(self, key, value):
-        shelf_key = self._create_shelf_key(key)
-        self._update_keys(shelf_key)
-        pickled = pickle.dumps(value)
-        self._redis.set(shelf_key, pickled)
+        return Shelf.__setitem__(self, self._prefix_key(key), value)
 
     def __getitem__(self, key):
-        shelf_key = self._create_shelf_key(key)
-        if shelf_key not in self._keys:
-            return None
-
-        pickled = self._redis.get(shelf_key)
-        return pickle.loads(pickled)
+        return Shelf.__getitem__(self, self._prefix_key(key))
 
     def __delitem__(self, key):
-        shelf_key = self._create_shelf_key(key)
-        self._redis.delete(shelf_key)
-        self._keys.remove(shelf_key)
+        return Shelf.__delitem__(self, self._prefix_key(key))
 
-    def __iter__(self):
-        for shelf_key in self._keys:
-            key = self._create_key(shelf_key)
-            yield key
+    def get(self, key, default=None):
+        # Redis supports __getitem__ for getting values from redis
+        # like redis['somevalue']. But redis.get actually gets things from
+        # cache, breaking the dict-like behaviour.
+        try:
+            return self.__getitem__(key)
+        except KeyError:
+            return default
 
     def __len__(self):
-        return len(self._keys)
+        return len(self._redis_keys())
 
-    def __enter__(self):
-        return self
+    def _redis_keys(self):
+        # self.dict is actually redis.
+        return self.dict.keys(pattern='{}*'.format(self._prefix))
 
-    def __exit__(self, *args):
-        pass
+    def __iter__(self):
+        for key in self._redis_keys():
+            our_key = self._remove_key_prefix(key.decode())
+            yield our_key
 
 
 def open(filename, redis):
