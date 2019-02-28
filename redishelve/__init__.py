@@ -49,5 +49,6 @@ class RedisShelf(Shelf):
             yield our_key
 
 
-def open(filename, redis):
-    return RedisShelf(redis, filename)
+def open(filename, redis, protocol=None, writeback=False):
+    return RedisShelf(
+        redis, filename, protocol=protocol, writeback=writeback)
