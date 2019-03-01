@@ -19,7 +19,6 @@ def shelf(redis):
 
 
 def test_shelf_value(shelf):
-    shelf.writeback = True
     shelf['test'] = 'TEST'
     assert 'TEST' == shelf['test']
 
