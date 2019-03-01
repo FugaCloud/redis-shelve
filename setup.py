@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='redishelve',
+    name='redis-shelve',
     version='1.0.0',
     author='Niels van Huijstee',
     author_email='niels@fuga.cloud',
@@ -11,11 +11,13 @@ setup(
         'redis',
     ],
     classifiers=[
+        "Development Status:: 5 - Production / Stable",
+        "Intended Audience :: Developers",
+        "License:: OSI Approved:: MIT License",
+        "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
-        "Development Status :: 4 - Beta", "License :: Public Domain",
-        "Operating System :: OS Independent",
-        "Intended Audience :: Developers", "Topic :: Utilities"
+        "Topic :: Utilities"
     ]
 )

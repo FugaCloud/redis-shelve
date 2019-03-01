@@ -1,2 +1,3 @@
 [run]
-omit=setup.py
+omit = 
+    setup.py

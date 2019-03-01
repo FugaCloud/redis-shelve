@@ -3,7 +3,7 @@ import pickle
 import fakeredis
 import pytest
 
-from redishelve import RedisShelf
+from redisshelve import RedisShelf
 
 
 @pytest.fixture
@@ -16,11 +16,6 @@ def redis():
 @pytest.fixture
 def shelf(redis):
     return RedisShelf(redis=redis, key_prefix='test')
-
-
-@pytest.fixture
-def unprefixed_shelf(redis):
-    return RedisShelf(redis=redis)
 
 
 def test_shelf_value(shelf):
@@ -85,9 +80,9 @@ def test_mutable_values_with_writeback(redis):
 
 
 def test_open_as_context_manager(redis):
-    import redishelve
+    import redisshelve
 
-    with redishelve.open(key_prefix='test', redis=redis) as test_shelf:
+    with redisshelve.open(key_prefix='test', redis=redis) as test_shelf:
         test_shelf['test'] = 'Test 1'
         assert 'Test 1' == test_shelf['test']
 
