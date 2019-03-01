@@ -2,13 +2,14 @@ from shelve import Shelf
 
 
 class RedisShelf(Shelf):
-    def __init__(self, redis, filename, protocol=None, writeback=False):
-        self._prefix = "{}|".format(filename)
-        self._keys = []
+    def __init__(self, redis, key_prefix=None, protocol=None, writeback=False):
+        self._prefix = '{}|'.format(key_prefix) if key_prefix else ''
         Shelf.__init__(
             self, dict=redis, protocol=protocol, writeback=writeback)
 
     def _prefix_key(self, key):
+        if not self._prefix:
+            return key
         if key.startswith('{}'.format(self._prefix)):
             # with writeback, shelf values are added by keys from cache.keys(),
             # but the cache keys are already prefixed.
@@ -49,6 +50,6 @@ class RedisShelf(Shelf):
             yield our_key
 
 
-def open(filename, redis, protocol=None, writeback=False):
+def open(redis, key_prefix=None, protocol=None, writeback=False):
     return RedisShelf(
-        redis, filename, protocol=protocol, writeback=writeback)
+        redis, key_prefix, protocol=protocol, writeback=writeback)

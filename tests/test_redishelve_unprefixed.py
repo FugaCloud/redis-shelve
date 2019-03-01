@@ -15,7 +15,7 @@ def redis():
 
 @pytest.fixture
 def shelf(redis):
-    return RedisShelf(redis, filename='test')
+    return RedisShelf(redis=redis)
 
 
 def test_shelf_value(shelf):
@@ -64,11 +64,11 @@ def test_shelf_delete(shelf):
 
 def test_shelf_shelves_to_redis(shelf, redis):
     shelf['test'] = 'TEST'
-    assert 'TEST' == pickle.loads(redis.get(b'test|test'))
+    assert 'TEST' == pickle.loads(redis.get(b'test'))
 
 
 def test_mutable_values_with_writeback(redis):
-    shelf = RedisShelf(filename='test', redis=redis, writeback=True)
+    shelf = RedisShelf(key_prefix='test', redis=redis, writeback=True)
     shelf.writeback = True
     shelf['list'] = [1, 2, 3]
     shelf['list'].append(4)
@@ -82,7 +82,7 @@ def test_mutable_values_with_writeback(redis):
 def test_open_as_context_manager(redis):
     import redishelve
 
-    with redishelve.open('test', redis) as test_shelf:
+    with redishelve.open(key_prefix='test', redis=redis) as test_shelf:
         test_shelf['test'] = 'Test 1'
         assert 'Test 1' == test_shelf['test']
 
