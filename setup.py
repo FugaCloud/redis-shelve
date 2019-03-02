@@ -1,23 +1,33 @@
-from setuptools import setup, find_packages
+# Copyright (c) 2019 Cyso < development [at] cyso . com >
+#
+# This file is part of redis-shelve.
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 3.0 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library. If not, see
+# <http://www.gnu.org/licenses/>.
+
+from setuptools import setup
 
 setup(
-    name='redis-shelve',
-    version='1.0.0',
-    author='Niels van Huijstee',
-    author_email='niels@fuga.cloud',
-    description='Alternative shelve that uses Redis as storage',
-    packages=find_packages(),
     install_requires=[
         'redis',
     ],
-    classifiers=[
-        "Development Status:: 5 - Production / Stable",
-        "Intended Audience :: Developers",
-        "License:: OSI Approved:: MIT License",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
-        "Topic :: Utilities"
-    ]
+    setup_requires=[
+        'pytest-runner',
+    ],
+    tests_require=[
+        'fakeredis',
+        'pytest',
+        'pytest-cov',
+    ],
 )
