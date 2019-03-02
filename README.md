@@ -7,9 +7,7 @@ suitable storage solution. If you need a shelve but cannot write to file and
 if you are friends with Redis already, you can use Redis Shelve.
 
 ## Python versions
-Python 3.3, 3.4, 3.5, 3.6 and 3.7 are tested. Shelf on Python 3.3 is not
-implemented as a context manager. `redishelve.open` will therefore not work if 
-you're on python 3.3
+3.4, 3.5, 3.6 and 3.7 are tested. 
 
 ## Usage
 The behaviour of the Redis shelve should be similar to Python shelve. Instead

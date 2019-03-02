@@ -1,10 +1,5 @@
 before_script:
   - pip install tox
-py33:
-  image: python:3.3-alpine
-  stage: test
-  script: 
-    - tox -e py33,flake8
 py34:
   image: python:3.4-alpine
   stage: test
