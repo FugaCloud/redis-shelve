@@ -6,8 +6,8 @@ In some contexts writing state to files can be hard. Redis can be a more
 suitable storage solution. If you need a shelve but cannot write to file and 
 if you are friends with Redis already, you can use Redis Shelve.
 
-## Python versions
-3.4, 3.5, 3.6 and 3.7 are tested. 
+## License
+Redis Shelve is licensed under LGPLv3. See the LICENSE file for details.
 
 ## Usage
 The behaviour of the Redis shelve should be similar to Python shelve. Instead
