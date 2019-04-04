@@ -1,4 +1,5 @@
 # Redis Shelve
+[![Build status](https://img.shields.io/travis/FugaCloud/redis-shelve.svg)](https://travis-ci.org/FugaCloud/redis-shelve)
 A Python shelve that uses Redis as storage. 
 
 ## Motivation
