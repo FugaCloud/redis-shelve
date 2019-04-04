@@ -10,6 +10,9 @@ if you are friends with Redis already, you can use Redis Shelve.
 ## License
 Redis Shelve is licensed under LGPLv3. See the LICENSE file for details.
 
+## Installation
+`pip install redis-shelve`
+
 ## Usage
 The behaviour of the Redis shelve should be similar to Python shelve. Instead
 of a filename, you can pass redis-shelve a redis instance. You can think of the
