@@ -25,6 +25,7 @@ setup(
     setup_requires=[
         'pytest-runner',
     ],
+    packages=['redisshelve'],
     tests_require=[
         'fakeredis',
         'pytest',
