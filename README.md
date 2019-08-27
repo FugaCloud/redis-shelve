@@ -1,4 +1,5 @@
 # Redis Shelve
+[![Build status](https://img.shields.io/travis/FugaCloud/redis-shelve.svg)](https://travis-ci.org/FugaCloud/redis-shelve)  
 A Python shelve that uses Redis as storage. 
 
 ## Motivation
@@ -8,6 +9,9 @@ if you are friends with Redis already, you can use Redis Shelve.
 
 ## License
 Redis Shelve is licensed under LGPLv3. See the LICENSE file for details.
+
+## Installation
+`pip install redis-shelve`
 
 ## Usage
 The behaviour of the Redis shelve should be similar to Python shelve. Instead
