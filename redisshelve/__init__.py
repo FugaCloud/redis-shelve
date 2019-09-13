@@ -64,10 +64,7 @@ class RedisShelf(Shelf):
 
     def __iter__(self):
         for key in self._redis_keys():
-            print(key)
-            our_key = self._remove_key_prefix(key.decode())
-            print(our_key)
-            yield our_key
+            yield self._remove_key_prefix(key.decode())
 
 
 def open(redis, key_prefix=None, protocol=None, writeback=False):
