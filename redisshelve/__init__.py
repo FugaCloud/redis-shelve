@@ -15,27 +15,25 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library. If not, see
 # <http://www.gnu.org/licenses/>.
-
 from shelve import Shelf
 
 
 class RedisShelf(Shelf):
     def __init__(self, redis, key_prefix=None, protocol=None, writeback=False):
-        self._prefix = '{}|'.format(key_prefix) if key_prefix else ''
-        Shelf.__init__(
-            self, dict=redis, protocol=protocol, writeback=writeback)
+        self._prefix = "{}|".format(key_prefix) if key_prefix else ""
+        Shelf.__init__(self, dict=redis, protocol=protocol, writeback=writeback)
 
     def _prefix_key(self, key):
         if not self._prefix:
             return key
-        if key.startswith('{}'.format(self._prefix)):
+        if key.startswith("{}".format(self._prefix)):
             # with writeback, shelf values are added by keys from cache.keys(),
             # but the cache keys are already prefixed.
             return key
         return "{prefix}{key}".format(prefix=self._prefix, key=key)
 
     def _remove_key_prefix(self, prefixed_key):
-        return prefixed_key[len(self._prefix):]
+        return prefixed_key[len(self._prefix) :]
 
     def __setitem__(self, key, value):
         return Shelf.__setitem__(self, self._prefix_key(key), value)
@@ -60,13 +58,15 @@ class RedisShelf(Shelf):
 
     def _redis_keys(self):
         # self.dict is actually redis.
-        return self.dict.keys(pattern='{}*'.format(self._prefix))
+        return self.dict.keys(pattern="{}*".format(self._prefix))
 
     def __iter__(self):
         for key in self._redis_keys():
             yield self._remove_key_prefix(key.decode())
 
+    def __contains__(self, key):
+        return self.dict.exists(self._prefix_key(key))
+
 
 def open(redis, key_prefix=None, protocol=None, writeback=False):
-    return RedisShelf(
-        redis, key_prefix, protocol=protocol, writeback=writeback)
+    return RedisShelf(redis, key_prefix, protocol=protocol, writeback=writeback)

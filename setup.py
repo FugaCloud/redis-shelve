@@ -24,16 +24,8 @@ with open("README.md", "r") as fh:
 setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
-    install_requires=[
-        'redis',
-    ],
-    setup_requires=[
-        'pytest-runner',
-    ],
-    packages=['redisshelve'],
-    tests_require=[
-        'fakeredis',
-        'pytest',
-        'pytest-cov',
-    ],
+    install_requires=["redis"],
+    setup_requires=["pytest-runner"],
+    packages=["redisshelve"],
+    tests_require=["fakeredis", "pytest", "pytest-cov"],
 )
